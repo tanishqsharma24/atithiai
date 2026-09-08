@@ -1,0 +1,28 @@
+Error while flushing PostHog PostHogFetchNetworkError: Network error while fetching PostHog
+    at retriable (file:///C:/Users/Dell/AppData/Local/npm-cache/_npx/d7c0f92b98ce1c29/node_modules/@posthog/core/dist/posthog-core-stateless.mjs:928:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async retriable (file:///C:/Users/Dell/AppData/Local/npm-cache/_npx/d7c0f92b98ce1c29/node_modules/@posthog/core/dist/utils/index.mjs:50:25)
+    at async PostHog.fetchWithRetry (file:///C:/Users/Dell/AppData/Local/npm-cache/_npx/d7c0f92b98ce1c29/node_modules/@posthog/core/dist/posthog-core-stateless.mjs:887:16)
+    at async PostHog.sendBatch (file:///C:/Users/Dell/AppData/Local/npm-cache/_npx/d7c0f92b98ce1c29/node_modules/@posthog/core/dist/posthog-core-stateless.mjs:744:9)
+    at async PostHog._flushRoute (file:///C:/Users/Dell/AppData/Local/npm-cache/_npx/d7c0f92b98ce1c29/node_modules/@posthog/core/dist/posthog-core-stateless.mjs:796:17)
+    at async PostHog._flush (file:///C:/Users/Dell/AppData/Local/npm-cache/_npx/d7c0f92b98ce1c29/node_modules/@posthog/core/dist/posthog-core-stateless.mjs:756:13) {
+  error: [TypeError: fetch failed] {
+    [cause]: Error: unable to verify the first certificate; if the root CA is installed locally, try running Node.js with --use-system-ca
+        at TLSSocket.onConnectSecure (node:internal/tls/wrap:1653:34)
+        at TLSSocket.emit (node:events:508:28)
+        at TLSSocket._finishInit (node:internal/tls/wrap:1099:8)
+        at ssl.onhandshakedone (node:internal/tls/wrap:885:12) {
+      code: 'UNABLE_TO_VERIFY_LEAF_SIGNATURE'
+    }
+  },
+  [cause]: [TypeError: fetch failed] {
+    [cause]: Error: unable to verify the first certificate; if the root CA is installed locally, try running Node.js with --use-system-ca
+        at TLSSocket.onConnectSecure (node:internal/tls/wrap:1653:34)
+        at TLSSocket.emit (node:events:508:28)
+        at TLSSocket._finishInit (node:internal/tls/wrap:1099:8)
+        at ssl.onhandshakedone (node:internal/tls/wrap:885:12) {
+      code: 'UNABLE_TO_VERIFY_LEAF_SIGNATURE'
+    }
+  }
+}
+{"error":"Device authorization failed — TLS certificate error contacting api.insforge.dev (UNABLE_TO_VERIFY_LEAF_SIGNATURE). Your network may be intercepting HTTPS (corporate proxy / VPN).","code":"UNKNOWN_ERROR"}

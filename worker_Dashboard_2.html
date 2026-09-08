@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-black text-white">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AtithiAI — Worker Dashboard | Operations & Tasks</title>
+  <meta name="description" content="AtithiAI role-based worker dashboard for Housekeeping, Maintenance, and Front Desk operations.">
+
+  <!-- Google Fonts matching the AtithiAI Design System -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:ital,wght@1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="worker_Dashboard_2.css">
+</head>
+<body>
+  <!-- Fixed Ultra Smooth Scroll Canvas Background (Scrubbing Engine) -->
+  <canvas id="animation-canvas"></canvas>
+
+  <!-- Ambient Glow Lighting Layer -->
+  <div class="ambient-glow-layer">
+    <div class="ambient-orb ambient-orb-1"></div>
+    <div class="ambient-orb ambient-orb-2"></div>
+    <div class="ambient-orb ambient-orb-3"></div>
+  </div>
+
+  <div class="dashboard-layout">
+
+    <!-- ========================================================
+         Top Header Navigation Bar (Section 4)
+         ======================================================== -->
+    <header class="top-header">
+      <div class="header-container">
+        <div class="header-left">
+          <div class="brand-link" style="cursor: default;">
+            <span class="brand-logo-text">ATITHIAI</span>
+            <span class="brand-badge">Worker OS</span>
+          </div>
+
+          <!-- Interactive Role Switcher Pills (Section 2) -->
+          <div class="role-switcher" aria-label="Worker Role Switcher">
+            <button type="button" class="role-pill-btn active" data-role="housekeeping" title="Switch to Housekeeping">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 10a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v11H9z"/></svg>
+              <span>Housekeeping</span>
+            </button>
+            <button type="button" class="role-pill-btn" data-role="maintenance" title="Switch to Maintenance">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+              <span>Maintenance</span>
+            </button>
+            <button type="button" class="role-pill-btn" data-role="frontdesk" title="Switch to Front Desk">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <span>Front Desk</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <!-- Offline/Online Sync Badge Indicator (Section 13) -->
+          <div id="sync-status-badge" class="sync-status-badge" title="Click to trigger instant sync with Cloud PMS">
+            <span class="status-dot"></span>
+            <span id="sync-status-text">Online — All Synced</span>
+          </div>
+
+          <!-- Notification Bell -->
+          <button type="button" class="icon-btn" id="btn-open-notifs-bell" title="View Property Notifications" onclick="document.getElementById('section-notifications').scrollIntoView({behavior:'smooth'})">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            <span class="icon-badge-dot"></span>
+          </button>
+
+          <!-- Worker Avatar Pill & Profile Trigger (Section 17) -->
+          <div id="btn-open-profile" class="worker-avatar-pill" title="Click to view Worker Profile & Preferences">
+            <div class="worker-avatar-img">RK</div>
+            <div class="worker-avatar-meta">
+              <span id="worker-name-display" class="worker-name">Raj Kumar</span>
+              <span id="worker-role-display" class="worker-role-tag">Housekeeping Lead</span>
+            </div>
+          </div>
+
+          <!-- AI Copilot CTA Trigger (Section 14) -->
+          <button type="button" class="btn-ai-header open-ai-drawer-btn" title="Open Worker AI Copilot">
+            <span>✦ Ask AtithiAI</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ========================================================
+         Main Scrollable Dashboard Body
+         ======================================================== -->
+    <main class="main-dashboard-container">
+
+      <!-- Hero Section: "Your Day. At a Glance." (Section 4) -->
+      <section class="worker-hero">
+        <div class="hero-meta-bar">
+          <div class="shift-badge">
+            <span class="shift-dot"></span>
+            <span id="shift-display">Morning Shift · 08:00 - 17:00</span>
+          </div>
+          <span style="font-size: 0.8rem; color: var(--color-white-subtle);">Property: <strong>Himalayan Heritage Resort</strong> · Active Wing 2F</span>
+        </div>
+
+        <h1 class="hero-main-title font-display-italic">
+          Your Day. At a Glance.
+        </h1>
+        <p class="hero-subtitle">
+          Everything you need to complete today’s work, right here.
+        </p>
+      </section>
+
+      <!-- KPI Cards Grid (Section 5) -->
+      <section class="kpi-grid">
+        <!-- Card 1: MY TASKS -->
+        <div class="glass-card kpi-card kpi-tasks task-filter-btn" data-filter="all" title="View all assigned tasks">
+          <div class="kpi-header">
+            <span class="kpi-label">My Tasks</span>
+            <div class="kpi-icon-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+            </div>
+          </div>
+          <div class="kpi-body">
+            <span id="kpi-tasks-val" class="kpi-value">8</span>
+            <span class="kpi-meaning">Today's assigned work</span>
+          </div>
+        </div>
+
+        <!-- Card 2: PENDING -->
+        <div class="glass-card kpi-card kpi-pending task-filter-btn" data-filter="in-progress" title="View pending tasks">
+          <div class="kpi-header">
+            <span class="kpi-label">Pending</span>
+            <div class="kpi-icon-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+          </div>
+          <div class="kpi-body">
+            <span id="kpi-pending-val" class="kpi-value">3</span>
+            <span class="kpi-meaning">Still to complete</span>
+          </div>
+        </div>
+
+        <!-- Card 3: COMPLETED -->
+        <div class="glass-card kpi-card kpi-completed task-filter-btn" data-filter="completed" title="View completed tasks">
+          <div class="kpi-header">
+            <span class="kpi-label">Completed</span>
+            <div class="kpi-icon-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+          </div>
+          <div class="kpi-body">
+            <span id="kpi-completed-val" class="kpi-value">5</span>
+            <span class="kpi-meaning">Completed today</span>
+          </div>
+        </div>
+
+        <!-- Card 4: HIGH PRIORITY -->
+        <div class="glass-card kpi-card kpi-high-priority task-filter-btn" data-filter="high-priority" title="View high priority urgent tasks">
+          <div class="kpi-header">
+            <span class="kpi-label">High Priority</span>
+            <div class="kpi-icon-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/></svg>
+            </div>
+          </div>
+          <div class="kpi-body">
+            <span id="kpi-priority-val" class="kpi-value">2</span>
+            <span class="kpi-meaning">Requires attention</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- AI Priority Card (Section 6) -->
+      <section class="glass-card ai-priority-card">
+        <div class="ai-priority-left">
+          <div class="ai-priority-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2.5"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+            <span>✦ AtithiAI Intelligence</span>
+          </div>
+          <h2 class="ai-priority-heading font-display-italic">Your priority for today.</h2>
+          <p id="ai-priority-desc" class="ai-priority-desc">
+            Room 204 requires attention before the next guest arrival. Room 102 is scheduled for cleaning next.
+          </p>
+        </div>
+
+        <div class="ai-priority-right">
+          <button type="button" id="btn-ask-ai-priority" class="btn-ask-ai">
+            <span>Ask AtithiAI</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+          <button type="button" class="btn-quick-execute" onclick="document.getElementById('section-todays-work').scrollIntoView({behavior:'smooth'})">
+            <span>View Immediate Task</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           Section 7: Today's Work / Task System
+           ======================================================== -->
+      <section id="section-todays-work">
+        <div class="section-header-block">
+          <div class="section-title-wrap">
+            <h2 class="section-heading-h2 font-display-italic">Today's Work.</h2>
+            <p class="section-subtitle-p">Your assigned tasks, ordered by priority.</p>
+          </div>
+
+          <!-- Filter Pills -->
+          <div class="filter-tabs">
+            <button type="button" class="filter-btn task-filter-btn active" data-filter="all">All</button>
+            <button type="button" class="filter-btn task-filter-btn" data-filter="high-priority">High Priority</button>
+            <button type="button" class="filter-btn task-filter-btn" data-filter="in-progress">In Progress</button>
+            <button type="button" class="filter-btn task-filter-btn" data-filter="completed">Completed</button>
+          </div>
+        </div>
+
+        <!-- Task Stream Container (Rendered by JS) -->
+        <div id="task-stream-container" class="task-stream-list">
+          <!-- Populated dynamically by worker.js -->
+        </div>
+      </section>
+
+      <!-- ========================================================
+           Section 8: Housekeeping Module ("Rooms to Refresh")
+           Visible when Role == 'housekeeping'
+           ======================================================== -->
+      <section id="module-housekeeping">
+        <div class="section-header-block">
+          <div class="section-title-wrap">
+            <span class="section-identity-tag">HOUSEKEEPING — Your assigned work for today</span>
+            <h2 class="section-heading-h2 font-display-italic">Rooms to Refresh.</h2>
+            <p class="section-subtitle-p">Complete today’s room tasks and keep every stay ready.</p>
+          </div>
+          <div class="section-actions">
+            <span style="font-size: 0.8rem; color: var(--color-white-subtle);">Tap room to open 7-point checklist</span>
+          </div>
+        </div>
+
+        <div class="hk-grid">
+          <!-- Room 102 -->
+          <div class="glass-card hk-room-card glass-card-interactive" data-action="open-hk" data-room="102">
+            <div class="hk-room-header">
+              <div class="hk-room-title-group">
+                <span class="hk-room-num">Room 102 <span class="badge-priority high" style="font-size: 0.65rem;">Priority</span></span>
+                <span class="hk-task-type">Standard Stayover Cleaning</span>
+              </div>
+              <span class="hk-due-tag">Due: 11:30 AM</span>
+            </div>
+
+            <div class="checklist-progress-wrap">
+              <div class="checklist-meta">
+                <span>Checklist Progress</span>
+                <strong style="color: #fff;">6 / 7 Done</strong>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" style="width: 85%;"></div>
+              </div>
+            </div>
+
+            <div class="hk-checklist-items-preview">
+              <span class="chk-tag checked">✓ Bed & linen</span>
+              <span class="chk-tag checked">✓ Bathroom</span>
+              <span class="chk-tag checked">✓ Towels</span>
+              <span class="chk-tag checked">✓ Floor</span>
+              <span class="chk-tag checked">✓ Dusting</span>
+              <span class="chk-tag checked">✓ Amenities</span>
+              <span class="chk-tag">○ Final Inspection</span>
+            </div>
+
+            <div class="hk-card-actions">
+              <button type="button" class="btn-primary-blue" style="width: 100%; font-size: 0.82rem; padding: 0.55rem;">
+                Open Quick Checklist (3 Taps)
+              </button>
+            </div>
+          </div>
+
+          <!-- Room 103 -->
+          <div class="glass-card hk-room-card glass-card-interactive" data-action="open-hk" data-room="103">
+            <div class="hk-room-header">
+              <div class="hk-room-title-group">
+                <span class="hk-room-num">Room 103</span>
+                <span class="hk-task-type">Deep Cleaning & Filter Sanitization</span>
+              </div>
+              <span class="hk-due-tag">Due: 12:30 PM</span>
+            </div>
+
+            <div class="checklist-progress-wrap">
+              <div class="checklist-meta">
+                <span>Checklist Progress</span>
+                <strong style="color: #fff;">2 / 7 Done</strong>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" style="width: 28%;"></div>
+              </div>
+            </div>
+
+            <div class="hk-checklist-items-preview">
+              <span class="chk-tag checked">✓ Bed & linen</span>
+              <span class="chk-tag checked">✓ Bathroom</span>
+              <span class="chk-tag">○ Towels</span>
+              <span class="chk-tag">○ Floor</span>
+              <span class="chk-tag">○ Dusting</span>
+            </div>
+
+            <div class="hk-card-actions">
+              <button type="button" class="btn-secondary-glass" style="width: 100%; font-size: 0.82rem; padding: 0.55rem;">
+                Continue Checklist
+              </button>
+            </div>
+          </div>
+
+          <!-- Room 105 -->
+          <div class="glass-card hk-room-card glass-card-interactive" data-action="open-hk" data-room="105">
+            <div class="hk-room-header">
+              <div class="hk-room-title-group">
+                <span class="hk-room-num">Room 105</span>
+                <span class="hk-task-type">Guest Departure Deep Turn</span>
+              </div>
+              <span class="hk-due-tag">Due: 01:00 PM</span>
+            </div>
+
+            <div class="checklist-progress-wrap">
+              <div class="checklist-meta">
+                <span>Checklist Progress</span>
+                <strong style="color: #fff;">0 / 7 Done</strong>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" style="width: 0%;"></div>
+              </div>
+            </div>
+
+            <div class="hk-checklist-items-preview">
+              <span class="chk-tag">○ Bed & linen</span>
+              <span class="chk-tag">○ Bathroom</span>
+              <span class="chk-tag">○ Towels</span>
+              <span class="chk-tag">○ Floor</span>
+              <span class="chk-tag">○ Inspection</span>
+            </div>
+
+            <div class="hk-card-actions">
+              <button type="button" class="btn-secondary-glass" style="width: 100%; font-size: 0.82rem; padding: 0.55rem;">
+                Start Room Turn
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           Section 9: Maintenance Module ("Fix What Matters")
+           Visible when Role == 'maintenance'
+           ======================================================== -->
+      <section id="module-maintenance" class="hidden">
+        <div class="section-header-block">
+          <div class="section-title-wrap">
+            <span class="section-identity-tag amber">MAINTENANCE — Your active maintenance work</span>
+            <h2 class="section-heading-h2 font-display-italic">Fix What Matters.</h2>
+            <p class="section-subtitle-p">Your active maintenance work, prioritised for today.</p>
+          </div>
+        </div>
+
+        <!-- Maintenance Stats Bar -->
+        <div class="maint-stat-bar">
+          <div class="maint-stat-item">
+            <div class="maint-stat-num text-blue">5</div>
+            <div class="maint-stat-title">Open Tickets</div>
+          </div>
+          <div class="maint-stat-item">
+            <div class="maint-stat-num" style="color: var(--color-brand-rose);">2</div>
+            <div class="maint-stat-title">High Priority</div>
+          </div>
+          <div class="maint-stat-item">
+            <div class="maint-stat-num text-amber">3</div>
+            <div class="maint-stat-title">In Progress</div>
+          </div>
+          <div class="maint-stat-item">
+            <div class="maint-stat-num text-emerald">18</div>
+            <div class="maint-stat-title">Resolved (30d)</div>
+          </div>
+        </div>
+
+        <div class="maint-tickets-grid">
+          <!-- Ticket 1: Room 204 -->
+          <div class="glass-card ticket-card glass-card-interactive" data-action="open-maint" data-ticket="M1023">
+            <div class="ticket-top">
+              <span class="ticket-id-tag">TICKET #M1023 · Room 204</span>
+              <span class="badge-priority high">High Priority</span>
+            </div>
+            <h3 class="ticket-issue-title">AC Compressor Not Cooling / Fan Vibration</h3>
+            <div class="ticket-notes-box">
+              <strong>Work Notes:</strong> Compressor checked. Filter replaced. Thermostat recalibrated. Verifying cooling temperature drop.
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--color-white-subtle);">
+              <span>Assigned: <strong>Raj Kumar</strong></span>
+              <span>Status: <strong style="color: var(--color-brand-blue);">In Progress</strong></span>
+            </div>
+            <button type="button" class="btn-primary-blue" style="font-size: 0.82rem; padding: 0.55rem;">
+              Update / Mark Resolved
+            </button>
+          </div>
+
+          <!-- Ticket 2: Room 102 -->
+          <div class="glass-card ticket-card glass-card-interactive" data-action="open-maint" data-ticket="M1024">
+            <div class="ticket-top">
+              <span class="ticket-id-tag">TICKET #M1024 · Room 102</span>
+              <span class="badge-priority high">Critical / High</span>
+            </div>
+            <h3 class="ticket-issue-title">Bathroom Sink Pipe Joint Slow Water Seepage</h3>
+            <div class="ticket-notes-box">
+              <strong>Work Notes:</strong> Main shutoff inspected. O-ring replacement kit required before Housekeeping starts floor mop.
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--color-white-subtle);">
+              <span>Assigned: <strong>Raj Kumar</strong></span>
+              <span>Status: <strong style="color: var(--color-brand-amber);">Open</strong></span>
+            </div>
+            <button type="button" class="btn-secondary-glass" style="font-size: 0.82rem; padding: 0.55rem;">
+              Start Maintenance Work
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           Section 10: Front Desk Module ("Today's Arrivals")
+           Visible when Role == 'frontdesk'
+           ======================================================== -->
+      <section id="module-frontdesk" class="hidden">
+        <div class="section-header-block">
+          <div class="section-title-wrap">
+            <span class="section-identity-tag emerald">FRONT DESK — Today's guest operations</span>
+            <h2 class="section-heading-h2 font-display-italic">Today's Arrivals.</h2>
+            <p class="section-subtitle-p">Keep every check-in and check-out moving smoothly.</p>
+          </div>
+        </div>
+
+        <!-- Front Desk Stats Bar -->
+        <div class="fd-stat-bar">
+          <div class="maint-stat-item">
+            <div class="maint-stat-num text-emerald">4</div>
+            <div class="maint-stat-title">Check-Ins</div>
+          </div>
+          <div class="maint-stat-item">
+            <div class="maint-stat-num text-blue">3</div>
+            <div class="maint-stat-title">Check-Outs</div>
+          </div>
+          <div class="maint-stat-item">
+            <div class="maint-stat-num text-amber">2</div>
+            <div class="maint-stat-title">Pending</div>
+          </div>
+          <div class="maint-stat-item">
+            <div class="maint-stat-num text-white">5</div>
+            <div class="maint-stat-title">Front Tasks</div>
+          </div>
+        </div>
+
+        <!-- Foreign Guest Compliance Banner (Section 10) -->
+        <div class="foreign-guest-alert-banner">
+          <div class="foreign-alert-left">
+            <div class="foreign-alert-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
+            <div>
+              <div class="foreign-alert-title">■ FOREIGN GUEST ALERT</div>
+              <div class="foreign-alert-sub">Additional guest compliance workflow required. Review passport and Form C details prior to check-in.</div>
+            </div>
+          </div>
+          <button type="button" class="btn-secondary-glass" style="font-size: 0.8rem; padding: 0.45rem 0.95rem;" data-action="open-checkin" data-guest="Sophie Laurent" data-room="305">
+            View Compliance Checklist →
+          </button>
+        </div>
+
+        <!-- Arrivals Grid -->
+        <div class="arrivals-grid">
+          <!-- Arrival 1 -->
+          <div class="glass-card arrival-card glass-card-interactive" data-action="open-checkin" data-guest="Alex Morgan" data-room="201">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div>
+                <h3 style="font-size: 1.1rem; font-weight: 600; color: #fff;">Alex Morgan</h3>
+                <p style="font-size: 0.8rem; color: var(--color-white-muted);">Room 201 · Deluxe Suite · 3 Nights</p>
+              </div>
+              <span class="badge-priority normal">ETA: 14:00</span>
+            </div>
+            <div style="font-size: 0.78rem; color: var(--color-brand-emerald);">✓ Booking Guaranteed & ID Scanned</div>
+            <button type="button" class="btn-primary-blue" style="font-size: 0.82rem; padding: 0.5rem;">
+              Launch 6-Step Check-in Flow
+            </button>
+          </div>
+
+          <!-- Arrival 2 -->
+          <div class="glass-card arrival-card glass-card-interactive" data-action="open-checkin" data-guest="Sophie Laurent" data-room="305">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div>
+                <h3 style="font-size: 1.1rem; font-weight: 600; color: #fff;">Sophie Laurent</h3>
+                <p style="font-size: 0.8rem; color: var(--color-white-muted);">Room 305 · Panoramic Studio · 5 Nights</p>
+              </div>
+              <span class="badge-priority high">Foreign Guest</span>
+            </div>
+            <div style="font-size: 0.78rem; color: var(--color-brand-amber);">⚠ Form C & Passport verification required</div>
+            <button type="button" class="btn-secondary-glass" style="font-size: 0.82rem; padding: 0.5rem;">
+              Open Foreign Guest Flow
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           Section 11: Live Room Status Grid
+           ======================================================== -->
+      <section id="section-rooms">
+        <div class="section-header-block">
+          <div class="section-title-wrap">
+            <h2 class="section-heading-h2 font-display-italic">Room Status.</h2>
+            <p class="section-subtitle-p">Know what needs attention before the next guest arrives.</p>
+          </div>
+          <div style="display: flex; gap: 0.75rem; font-size: 0.75rem; flex-wrap: wrap; color: var(--color-white-subtle);">
+            <span style="display: inline-flex; align-items: center; gap: 0.3rem;"><span style="width:8px;height:8px;border-radius:50%;background:var(--color-brand-emerald)"></span> Ready</span>
+            <span style="display: inline-flex; align-items: center; gap: 0.3rem;"><span style="width:8px;height:8px;border-radius:50%;background:var(--color-brand-blue)"></span> Cleaning</span>
+            <span style="display: inline-flex; align-items: center; gap: 0.3rem;"><span style="width:8px;height:8px;border-radius:50%;background:var(--color-brand-amber)"></span> Maintenance</span>
+            <span style="display: inline-flex; align-items: center; gap: 0.3rem;"><span style="width:8px;height:8px;border-radius:50%;background:var(--color-brand-purple)"></span> Occupied</span>
+          </div>
+        </div>
+
+        <!-- Room Grid (Populated dynamically) -->
+        <div id="room-grid-container" class="room-status-grid">
+          <!-- Room chips generated by worker.js -->
+        </div>
+      </section>
+
+      <!-- ========================================================
+           Section 12: Notifications & Recent Activity
+           ======================================================== -->
+      <section id="section-notifications">
+        <div class="section-header-block">
+          <div class="section-title-wrap">
+            <h2 class="section-heading-h2 font-display-italic">Stay in the Loop.</h2>
+            <p class="section-subtitle-p">Important updates from across your property.</p>
+          </div>
+        </div>
+
+        <div class="activity-stream-wrap">
+          <!-- Notifications Stream -->
+          <div class="glass-card" style="padding: 1.5rem;">
+            <h3 style="font-size: 0.95rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; color: #fff;">
+              Recent Alerts
+            </h3>
+            <div class="notif-item">
+              <div class="notif-icon-circle" style="background: var(--color-brand-blue-subtle); color: var(--color-brand-blue);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+              </div>
+              <div class="notif-text-wrap">
+                <span class="notif-title">New Task: Room 204 Departure Check</span>
+                <span class="notif-time">10 mins ago · Assigned by Property Manager</span>
+              </div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-icon-circle" style="background: var(--color-brand-emerald-subtle); color: var(--color-brand-emerald);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div class="notif-text-wrap">
+                <span class="notif-title">Guest Checked-In: Room 101 (Mr. V. Sharma)</span>
+                <span class="notif-time">32 mins ago · Digital Key Activated</span>
+              </div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-icon-circle" style="background: var(--color-brand-amber-subtle); color: var(--color-brand-amber);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+              </div>
+              <div class="notif-text-wrap">
+                <span class="notif-title">Maintenance Ticket #M1023 updated to In-Progress</span>
+                <span class="notif-time">45 mins ago · Technician assigned</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity Live Ticker -->
+          <div class="glass-card" style="padding: 1.5rem;">
+            <h3 style="font-size: 0.95rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; color: #fff;">
+              Recent Activity Feed
+            </h3>
+            <div class="ticker-pills">
+              <div class="ticker-row">
+                <span style="color: var(--color-brand-emerald);">✓</span>
+                <span><strong>Room 102</strong> cleaning completed and verified</span>
+              </div>
+              <div class="ticker-row">
+                <span style="color: var(--color-brand-emerald);">✓</span>
+                <span><strong>Room 101</strong> 7-point checklist submitted</span>
+              </div>
+              <div class="ticker-row">
+                <span style="color: var(--color-brand-blue);">■</span>
+                <span><strong>Room 103</strong> deep cleaning started</span>
+              </div>
+              <div class="ticker-row">
+                <span style="color: var(--color-brand-amber);">⚠</span>
+                <span><strong>Room 204</strong> AC inspection scheduled before 14:00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           Section 13: Offline-First & Sync Center
+           ======================================================== -->
+      <section id="section-sync">
+        <div class="section-header-block">
+          <div class="section-title-wrap">
+            <h2 class="section-heading-h2 font-display-italic">Always Ready.</h2>
+            <p class="section-subtitle-p">Your work stays safe, even without connectivity.</p>
+          </div>
+        </div>
+
+        <div class="glass-card sync-center-card">
+          <div class="sync-metrics-grid">
+            <div class="sync-metric-item">
+              <span id="sync-last-time" class="sync-metric-num text-emerald">10:42 AM</span>
+              <span class="sync-metric-label">Last Successful Sync</span>
+            </div>
+            <div class="sync-metric-item">
+              <span id="sync-local-count" class="sync-metric-num text-amber">0</span>
+              <span class="sync-metric-label">Local Changes Cached</span>
+            </div>
+            <div class="sync-metric-item">
+              <span id="sync-uploaded-count" class="sync-metric-num text-blue">12</span>
+              <span class="sync-metric-label">Uploaded Transactions</span>
+            </div>
+            <div class="sync-metric-item">
+              <span class="sync-metric-num text-white">0</span>
+              <span class="sync-metric-label">Conflicts Detected</span>
+            </div>
+          </div>
+
+          <div class="sync-controls-row">
+            <div class="sync-info-text">
+              <strong style="color: #fff;">Offline-First Protocol:</strong> All checklist submissions, tickets, and status changes are written directly to local encrypted device storage first, guaranteeing zero data loss during rural network dropouts.
+            </div>
+            <div style="display: flex; gap: 0.75rem; align-items: center;">
+              <button type="button" id="btn-toggle-offline" class="btn-secondary-glass" style="font-size: 0.82rem; padding: 0.5rem 1rem;">
+                Simulate Offline
+              </button>
+              <button type="button" id="btn-sync-now" class="btn-primary-blue" style="font-size: 0.82rem; padding: 0.5rem 1.25rem;">
+                <span>Sync Now →</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ========================================================
+         Section 14: Worker AI Assistant Drawer ("✦ Ask AtithiAI")
+         ======================================================== -->
+    <div id="ai-drawer-overlay" class="drawer-overlay">
+      <div class="slide-drawer">
+        <div class="drawer-header">
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--color-brand-blue); display: flex; align-items: center; justify-content: center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+            </div>
+            <div>
+              <h3 style="font-size: 1rem; font-weight: 700; color: #fff;">✦ AtithiAI Assistant</h3>
+              <p style="font-size: 0.72rem; color: var(--color-white-subtle);">Action-Oriented Worker Intelligence</p>
+            </div>
+          </div>
+          <button type="button" id="btn-close-ai-drawer" class="icon-btn" aria-label="Close AI Drawer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <div class="drawer-body">
+          <div class="ai-prompts-row">
+            <p style="font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-white-subtle);">
+              Suggested Inquiries
+            </p>
+            <button type="button" class="ai-prompt-chip" data-prompt="What should I do next?">
+              <span>“What should I do next?”</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+            <button type="button" class="ai-prompt-chip" data-prompt="Show my pending tasks.">
+              <span>“Show my pending tasks.”</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+            <button type="button" class="ai-prompt-chip" data-prompt="Why is Room 204 blocked?">
+              <span>“Why is Room 204 blocked?”</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+            <button type="button" class="ai-prompt-chip" data-prompt="Report a maintenance issue.">
+              <span>“Report a maintenance issue.”</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+
+          <!-- Chat messages area -->
+          <div id="ai-chat-feed" class="ai-chat-feed">
+            <div class="ai-msg bot">
+              ✦ Hello Raj! I am your AtithiAI assistant. Ask me anything about your assigned rooms, pending maintenance tickets, or next best actions.
+            </div>
+          </div>
+        </div>
+
+        <div class="drawer-footer">
+          <div class="ai-input-bar">
+            <input type="text" id="ai-input-field" class="ai-input-field" placeholder="Ask AtithiAI or type a room query..." />
+            <button type="button" id="btn-voice-sim" class="icon-btn" style="width: 32px; height: 32px;" title="Voice Input Simulation" onclick="document.getElementById('ai-input-field').value='What should I do next?';">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+            </button>
+            <button type="button" id="btn-send-ai" class="btn-primary-blue" style="padding: 0.4rem 0.85rem; font-size: 0.8rem;">
+              Send
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================
+         Housekeeping 7-Point Checklist Modal (Section 8)
+         ======================================================== -->
+    <div id="hk-modal-overlay" class="modal-overlay">
+      <div class="modal-container">
+        <div class="modal-header">
+          <div>
+            <h3 id="hk-modal-room-num" style="font-size: 1.25rem; font-weight: 700; color: #fff;">Room 102</h3>
+            <p style="font-size: 0.78rem; color: var(--color-white-muted);">7-Point Fast Touch Cleaning Checklist</p>
+          </div>
+          <button type="button" id="btn-close-hk-modal" class="icon-btn" aria-label="Close Checklist">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <p style="font-size: 0.85rem; color: var(--color-white-muted);">
+            Tap each checkpoint as you complete it. Designed for rapid 3–4 tap workflow with large touch targets.
+          </p>
+
+          <div id="hk-checklist-container" class="interactive-check-list">
+            <!-- Checklist rows dynamically injected -->
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary-glass" onclick="document.getElementById('hk-modal-overlay').classList.remove('open');">
+            Report Issue
+          </button>
+          <button type="button" id="btn-complete-hk-cleaning" class="btn-primary-blue">
+            ✓ Complete Cleaning
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================
+         Maintenance Ticket Modal (Section 9)
+         ======================================================== -->
+    <div id="maint-modal-overlay" class="modal-overlay">
+      <div class="modal-container">
+        <div class="modal-header">
+          <div>
+            <h3 id="maint-modal-ticket-id" style="font-size: 1.15rem; font-weight: 700; color: #fff;">Ticket #M1023</h3>
+            <p id="maint-modal-title" style="font-size: 0.85rem; color: var(--color-white-muted);">AC compressor issue</p>
+          </div>
+          <button type="button" id="btn-close-maint-modal" class="icon-btn" aria-label="Close Ticket">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-input-group">
+            <label class="form-label">Technician Work Notes & Diagnostics</label>
+            <textarea id="maint-modal-notes" class="form-textarea" rows="3"></textarea>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-glass); padding: 1rem; border-radius: 12px;">
+            <p style="font-size: 0.85rem; font-weight: 600; color: #fff; margin-bottom: 0.3rem;">Verification Photo Attachment</p>
+            <p style="font-size: 0.78rem; color: var(--color-white-muted); margin-bottom: 0.75rem;">Simulated camera attachment for manager sign-off.</p>
+            <button type="button" class="btn-secondary-glass" style="font-size: 0.8rem; padding: 0.4rem 0.85rem;">
+              📷 Capture Verification Photo
+            </button>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary-glass" onclick="document.getElementById('maint-modal-overlay').classList.remove('open');">
+            Cancel
+          </button>
+          <button type="button" id="btn-resolve-ticket" class="btn-primary-blue">
+            Mark Resolved & Send for Verification
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================
+         Front Desk 6-Step Check-in Flow Modal (Section 10)
+         ======================================================== -->
+    <div id="checkin-modal-overlay" class="modal-overlay">
+      <div class="modal-container">
+        <div class="modal-header">
+          <div>
+            <h3 style="font-size: 1.15rem; font-weight: 700; color: #fff;">
+              Check-in: <span id="checkin-guest-name">Alex Morgan</span> (<span id="checkin-room-num">201</span>)
+            </h3>
+            <p id="checkin-current-step-title" style="font-size: 0.78rem; color: var(--color-brand-blue);">
+              Step 1 of 6: Booking Confirmation
+            </p>
+          </div>
+          <button type="button" id="btn-close-checkin" class="icon-btn" aria-label="Close Check-in">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <!-- Stepper Node Indicator Bar -->
+          <div class="stepper-bar">
+            <div id="step-node-1" class="step-node active"><div class="step-circle">1</div><span>Booking</span></div>
+            <div id="step-node-2" class="step-node"><div class="step-circle">2</div><span>Details</span></div>
+            <div id="step-node-3" class="step-node"><div class="step-circle">3</div><span>ID Verify</span></div>
+            <div id="step-node-4" class="step-node"><div class="step-circle">4</div><span>Keycard</span></div>
+            <div id="step-node-5" class="step-node"><div class="step-circle">5</div><span>Payment</span></div>
+            <div id="step-node-6" class="step-node"><div class="step-circle">6</div><span>Complete</span></div>
+          </div>
+
+          <!-- Dynamic Step Content -->
+          <div id="checkin-step-content">
+            <!-- Injected by worker.js -->
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary-glass" onclick="document.getElementById('checkin-modal-overlay').classList.remove('open');">
+            Save & Exit
+          </button>
+          <button type="button" id="btn-next-step-checkin" class="btn-primary-blue">
+            Proceed to Next Step →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================
+         Section 17: Profile & Workspace Preferences Modal
+         ======================================================== -->
+    <div id="profile-modal-overlay" class="modal-overlay">
+      <div class="modal-container">
+        <div class="modal-header">
+          <div>
+            <h2 class="section-heading-h2 font-display-italic" style="font-size: 1.35rem;">Your Workspace.</h2>
+            <p class="section-subtitle-p">Your role, schedule and AtithiAI preferences.</p>
+          </div>
+          <button type="button" id="btn-close-profile" class="icon-btn" aria-label="Close Profile">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div style="display: flex; align-items: center; gap: 1rem; background: rgba(255,255,255,0.04); padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border-glass);">
+            <div style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #0066ff, #10b981); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; color: #fff;">
+              RK
+            </div>
+            <div>
+              <h3 style="font-size: 1.1rem; font-weight: 700; color: #fff;">Raj Kumar</h3>
+              <p style="font-size: 0.82rem; color: var(--color-brand-blue);">Housekeeping Lead & Maintenance Tech</p>
+              <p style="font-size: 0.78rem; color: var(--color-white-subtle);">Morning Shift · 08:00 Start · 13:00 Break · 17:00 End</p>
+            </div>
+          </div>
+
+          <div class="form-input-group">
+            <label class="form-label">Preferred Operating Language</label>
+            <select class="form-select">
+              <option>English (Default)</option>
+              <option>हिन्दी (Hindi)</option>
+              <option>नेपाली (Nepali)</option>
+              <option>Español (Spanish)</option>
+            </select>
+          </div>
+
+          <div class="form-input-group">
+            <label class="form-label">Touch Target Sizing</label>
+            <select class="form-select">
+              <option>Optimized for Mobile Touchscreens (48px+)</option>
+              <option>Compact Desktop View</option>
+            </select>
+          </div>
+
+          <div style="background: rgba(0, 102, 255, 0.06); border: 1px solid rgba(0, 102, 255, 0.2); padding: 1rem; border-radius: 12px;">
+            <p style="font-size: 0.85rem; font-weight: 600; color: #fff;">Encrypted Offline Database</p>
+            <p style="font-size: 0.78rem; color: var(--color-white-muted); margin-bottom: 0.5rem;">IndexedDB Cache: 42.8 KB synchronized locally.</p>
+            <button type="button" class="btn-secondary-glass" style="font-size: 0.78rem; padding: 0.35rem 0.75rem;" onclick="showToast('Local database cache validated.', 'success');">
+              Validate Local Storage Cache
+            </button>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-primary-blue" onclick="document.getElementById('profile-modal-overlay').classList.remove('open'); showToast('Preferences updated successfully.', 'success');">
+            Save Preferences
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================
+         Section 16: Mobile Bottom Navigation Bar
+         ======================================================== -->
+    <nav class="mobile-bottom-nav" aria-label="Mobile Bottom Bar">
+      <button type="button" class="mobile-nav-item active" data-target="home">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Home</span>
+      </button>
+      <button type="button" class="mobile-nav-item" data-target="tasks">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+        <span>Tasks</span>
+      </button>
+      <button type="button" class="mobile-nav-item ai-sparkle" data-target="ai">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+        <span>✦ AI</span>
+      </button>
+      <button type="button" class="mobile-nav-item" data-target="alerts">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+        <span>Alerts</span>
+      </button>
+      <button type="button" class="mobile-nav-item" data-target="more">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+        <span>More</span>
+      </button>
+    </nav>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Minimal Footer -->
+    <footer style="padding: 2rem 1.5rem; text-align: center; font-size: 0.75rem; color: var(--color-white-subtle); border-top: 1px solid var(--border-glass-subtle); margin-top: auto;">
+      © 2026 AtithiAI Technologies · Role-Based Hospitality Operating System · 
+      <a href="index.html" style="color: var(--color-brand-blue); text-decoration: none; margin-left: 0.5rem;">Return to Main Website ↗</a>
+    </footer>
+
+  </div>
+
+  <script src="worker_Dashboard_2.js"></script>
+</body>
+</html>
